@@ -22,7 +22,7 @@ class TestSafeDumpLoad:
 			[ { 'a':2, 'b':'c' }, 'a: 2\nb: c\n', ],
 			[ {}, '{}\n', ], [ {'a':{}}, 'a: {}\n', ],
 			[ [], '[]\n', ], [ [[]]    , '- []\n', ],
-			[ data_for_test, "- 2\n- 1\n- 0\n- !!int'-1'\n- !!int'-2'\n- '5'\n- '-5'\n- a b c\n- 2.2\n- 1.1\n- 0.0\n- !!float'-1.1'\n- !!float'-2.2'\n- a: 22\n", ],
+			[ data_for_test, "- 2\n- 1\n- 0\n- !!int '-1'\n- !!int '-2'\n- '5'\n- '-5'\n- a b c\n- 2.2\n- 1.1\n- 0.0\n- !!float '-1.1'\n- !!float '-2.2'\n- a: 22\n", ],
 		]:
 			actual = yaml.safe_dump(data)
 			assert expected == actual, f'\n{repr(expected)}\n!=\n{repr(actual)}'
@@ -31,7 +31,7 @@ class TestSafeDumpLoad:
 		'''test yaml.safe_dump() followed by yaml.safe_load(). should build itentical data'''
 
 		load_kwargs = {}
-		
+
 		gen_paire     = lambda k: lambda v: [ k, v, ]
 		default_value = object()
 		clean_paires  = lambda paires: filter(lambda paire: paire[1] is not default_value, paires)

@@ -308,7 +308,7 @@ class Emitter:
                 self.states.append(self.expect_flow_mapping_simple_value)
                 self.expect_node(mapping=True, simple_key=True)
             else:
-                self.write_indicator("?", whitespace=True)
+                self.write_indicator("?", need_whitespace=True)
                 self.states.append(self.expect_flow_mapping_value)
                 self.expect_node(mapping=True)
 
@@ -329,7 +329,7 @@ class Emitter:
                 self.states.append(self.expect_flow_mapping_simple_value)
                 self.expect_node(mapping=True, simple_key=True)
             else:
-                self.write_indicator("?", whitespace=True)
+                self.write_indicator("?", need_whitespace=True)
                 self.states.append(self.expect_flow_mapping_value)
                 self.expect_node(mapping=True)
 
@@ -341,7 +341,7 @@ class Emitter:
     def expect_flow_mapping_value(self) -> None:
         if self.canonical or self.column > self.best_width:
             self.write_indent()
-        self.write_indicator(":", whitespace=True)
+        self.write_indicator(":", need_whitespace=True)
         self.states.append(self.expect_flow_mapping_key)
         self.expect_node(mapping=True)
 
@@ -713,7 +713,7 @@ class Emitter:
             end += 1
 
     def write_single_quoted(self, text: str, split: bool = True) -> None:
-        self.write_indicator("'", whitespace=True)
+        self.write_indicator("'", need_whitespace=True)
         spaces = False
         breaks = False
         start = end = 0
@@ -741,12 +741,14 @@ class Emitter:
                     start = end
             else:
                 if ch is None or ch in " '\n":
-                    self._write(text[start:end])
-                    self.column += end - start
+                    if start < end:
+                        self._write(text[start:end])
+                        self.column += end - start
+                        start = end
                     if ch == "'":
                         self._write("''")
                         self.column += 2
-                    start = end + 1
+                        start = end + 1
 
             if ch is not None:
                 spaces = ch == " "
@@ -774,7 +776,7 @@ class Emitter:
     }
 
     def write_double_quoted(self, text: str, split: bool = True) -> None:
-        self.write_indicator('"', whitespace=True)
+        self.write_indicator('"', need_whitespace=True)
         start = end = 0
 
         while end <= len(text):
